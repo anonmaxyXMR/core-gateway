@@ -31,7 +31,7 @@ jobs:
       - name: Prepare binary
         run: |
           mkdir -p dist
-          cp build/core-gateway dist/core-gateway
+          cp build/bin/core-gateway dist/core-gateway
 
       - name: Upload to GitHub Release (version 08)
         uses: softprops/action-gh-release@v2
