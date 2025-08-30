@@ -1,0 +1,43 @@
+name: core-gateway builder
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git build-essential cmake libuv1-dev libssl-dev libhwloc-dev \
+            automake libtool autoconf
+
+      - name: Build with CMake
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make -j$(nproc)
+
+      - name: Prepare binary
+        run: |
+          mkdir -p dist
+          cp build/core-gateway dist/core-gateway
+
+      - name: Upload to GitHub Release (version 08)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v08"
+          name: "Version 08"
+          files: dist/core-gateway
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
